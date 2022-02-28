@@ -79,10 +79,10 @@ WSGI_APPLICATION = "resumejson.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "resumejson",
-        "USER": "co_book",
-        "PASSWORD": "co_book",
-        "HOST": "localhost",
+        "NAME": "ephfbetg",
+        "USER": "ephfbetg",
+        "PASSWORD": "zUppkBfzBzwoE2FxqkC8S0CLJxNsOJ-B",
+        "HOST": "jelani.db.elephantsql.com",
         "PORT": 5432,
     }
 }
