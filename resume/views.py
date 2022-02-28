@@ -8,19 +8,14 @@ from rest_framework import status
 
 from django.views import View
 
-from resume.utils import query_debugger
 from resume.models import Profile
 
 
 class ResumeView(View):
-    @query_debugger
-    def get(self, request: Request):
-        # make queries
+    def get(self) -> HttpResponse:
+        """Retrieve all the data in the Profile db."""
         profile = Profile.objects.prefetch_related().last()
-        # education = Education.objects.all().last()
-        # skills = Skill.objects.all()
-        # publications = Publication.objects.all()
-        print(profile, "-----------")
+
         if profile is not None:
             json_data = json.dumps(
                 {

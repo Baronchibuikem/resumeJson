@@ -3,8 +3,6 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 import uuid
 
-# Create your models here.
-
 
 class Location(models.Model):
     id = models.UUIDField(
