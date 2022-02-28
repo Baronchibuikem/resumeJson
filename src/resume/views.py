@@ -9,35 +9,28 @@ from rest_framework import status
 from django.views import View
 
 from resume.utils import query_debugger
-from resume.models import Basic, Education, Skill
-
-# class SocialProfileView(APIView):
-#     serializer_class = SocialProfileSerializer
-
-#     def get(self, request: Request):
-#         socials = SocialProfile.objects.all().first()
-
-#         return Response(
-#             SocialProfileSerializer(socials).data, status=status.HTTP_200_OK
-#         )
+from resume.models import Profile
 
 
 class ResumeView(View):
     @query_debugger
     def get(self, request: Request):
         # make queries
-        profile = Basic.objects.prefetch_related().last()
-        education = Education.objects.all().last()
-        skills = Skill.objects.all()
-
-        json_data = json.dumps(
-            {
-                "basics": {
-                    "fullname": profile.name,
-                    "label": profile.label,
-                    "phone number": str(profile.phone),
-                    "website": profile.website,
-                    "summary": profile.summary,
+        profile = Profile.objects.prefetch_related().last()
+        # education = Education.objects.all().last()
+        # skills = Skill.objects.all()
+        # publications = Publication.objects.all()
+        print(profile, "-----------")
+        if profile is not None:
+            json_data = json.dumps(
+                {
+                    "profile": {
+                        "fullname": profile.profile.name,
+                        "label": profile.profile.label,
+                        "phone number": str(profile.profile.phone),
+                        "website": profile.profile.website,
+                        "summary": profile.profile.summary,
+                    },
                     "socials": [
                         {
                             "username": social.username,
@@ -54,19 +47,48 @@ class ResumeView(View):
                             "country": profile.address.country,
                             "postal code": str(profile.address.postal_code),
                         }
+                        if profile.address is not None
+                        else {}
                     ],
-                },
-                "education": {
-                    "institution": education.institution,
-                    "course enrolled in": education.course_enrolled,
-                    "study type": education.study_type,
-                    "start date": str(education.start_date),
-                    "end date": str(education.end_date),
-                },
-            }
-        )
+                    "education": [
+                        {
+                            "institution": education.institution,
+                            "course enrolled in": education.course_enrolled,
+                            "study type": education.study_type,
+                            "start date": str(education.start_date),
+                            "end date": str(education.end_date),
+                        }
+                        for education in profile.education.all()
+                    ],
+                    "skills": [
+                        {
+                            "name": skill.name,
+                            "level": skill.level,
+                            "keywords": skill.keywords,
+                        }
+                        for skill in profile.skill.all()
+                    ],
+                    "work history": [
+                        {
+                            "company": work.company,
+                            "position": work.position,
+                            "company_website": work.website,
+                            "start date": str(work.start_date),
+                            "end date": str(work.end_date),
+                            "company_summary": work.company_summary,
+                            "achievements": work.highlight,
+                        }
+                        for work in profile.work_history.all()
+                    ],
+                }
+            )
+            return HttpResponse(
+                json_data,
+                status=status.HTTP_200_OK,
+                content_type="application/json",
+            )
         return HttpResponse(
-            json_data,
+            "No profile found",
             status=status.HTTP_200_OK,
             content_type="application/json",
         )
