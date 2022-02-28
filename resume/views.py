@@ -12,7 +12,7 @@ from resume.models import Profile
 
 
 class ResumeView(View):
-    def get(self) -> HttpResponse:
+    def get(self, request: Request) -> HttpResponse:
         """Retrieve all the data in the Profile db."""
         profile = Profile.objects.prefetch_related().last()
 
@@ -74,6 +74,15 @@ class ResumeView(View):
                             "achievements": work.highlight,
                         }
                         for work in profile.work_history.all()
+                    ],
+                    "publications": [
+                        {
+                            "title": publication.title,
+                            "published on": publication.ppublished_on,
+                            "date_published": publication.date_published,
+                            "url": publication.website,
+                        }
+                        for publication in profile.publication.all()
                     ],
                 }
             )
