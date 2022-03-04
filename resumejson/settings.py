@@ -80,10 +80,10 @@ WSGI_APPLICATION = "resumejson.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "ephfbetg",
-        "USER": "ephfbetg",
-        "PASSWORD": "zUppkBfzBzwoE2FxqkC8S0CLJxNsOJ-B",
-        "HOST": "jelani.db.elephantsql.com",
+        "NAME": "co_ride",
+        "USER": "co_ride",
+        "PASSWORD": "resumejson",
+        "HOST": "co_ride",
         "PORT": 5432,
     }
 }
@@ -127,13 +127,10 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-STATICFILES_DIRS = [
-    os.path.join(os.path.join(BASE_DIR, "static")),
-]
 
-STATIC_ROOT = os.path.join(os.path.join(BASE_DIR, "staticfiles"))
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
-MEDIA_ROOT = os.path.join(os.path.join(BASE_DIR, "media/"))
+MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
 MEDIA_URL = "/media/"
 
