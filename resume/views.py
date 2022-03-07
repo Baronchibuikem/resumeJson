@@ -1,10 +1,19 @@
 import json
 from django.http import HttpResponse
+from django.shortcuts import render
 from rest_framework.request import Request
 from rest_framework import status
 
 from django.views import View
-from resume.models import Profile
+from resume.models import Profile, PersonalDetail
+
+
+class IndexView(View):
+    template_name = "resume/index.html"
+
+    def get(self, request):
+        person_data = PersonalDetail.objects.all()
+        return render(request, self.template_name, {"objects": person_data})
 
 
 class ResumeView(View):
