@@ -84,10 +84,10 @@ WSGI_APPLICATION = "resumejson.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "resumejosn",
-        "USER": "postgres",
-        "PASSWORD": "postgres",
-        "HOST": "localhost",
+        "NAME": config("PG_NAME"),
+        "USER": config("PG_USER"),
+        "PASSWORD": config("PG_PASSWORD"),
+        "HOST": config("PG_HOST"),
         "PORT": 5432,
     }
 }
