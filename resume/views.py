@@ -1,13 +1,9 @@
 import json
 from django.http import HttpResponse
-from django.shortcuts import render
 from rest_framework.request import Request
-from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework import status
 
 from django.views import View
-
 from resume.models import Profile
 
 
@@ -15,7 +11,6 @@ class ResumeView(View):
     def get(self, request: Request) -> HttpResponse:
         """Retrieve all the data in the Profile db."""
         profile = Profile.objects.prefetch_related().last()
-
         if profile is not None:
             json_data = json.dumps(
                 {
@@ -25,6 +20,7 @@ class ResumeView(View):
                         "phone number": str(profile.profile.phone),
                         "website": profile.profile.website,
                         "summary": profile.profile.summary,
+                        "image": str(profile.profile.picture.url),
                     },
                     "socials": [
                         {

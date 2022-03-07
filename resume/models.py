@@ -2,12 +2,12 @@ from phonenumber_field.modelfields import PhoneNumberField
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 import uuid
+from resumejson.storage_backends import PublicMediaStorage
+from resume.utils import generic_documents_directory
 
 
 class Location(models.Model):
-    id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4(), editable=False
-    )  # NOQA (ignore all errors on this line)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
     city = models.CharField(max_length=50, null=True, blank=True)
     state = models.CharField(max_length=50, null=True, blank=True)
     country_code = models.CharField(max_length=5, null=True, blank=True)
@@ -19,9 +19,7 @@ class Location(models.Model):
 
 
 class SocialProfile(models.Model):
-    id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4(), editable=False
-    )  # NOQA (ignore all errors on this line)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
     network = models.CharField(max_length=50, null=True, blank=True)
     username = models.CharField(max_length=50, null=True, blank=True)
     url = models.URLField(null=True, blank=True)
@@ -31,9 +29,7 @@ class SocialProfile(models.Model):
 
 
 class WorkHistory(models.Model):
-    id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4(), editable=False
-    )  # NOQA (ignore all errors on this line)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
     company = models.CharField(max_length=100, blank=True)
     position = models.CharField(max_length=100, blank=True)
     website = models.URLField(null=True, blank=True)
@@ -47,9 +43,7 @@ class WorkHistory(models.Model):
 
 
 class Education(models.Model):
-    id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4(), editable=False
-    )  # NOQA (ignore all errors on this line)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
     institution = models.CharField(max_length=100, null=True, blank=True)
     course_enrolled = models.CharField(max_length=100, null=True, blank=True)
     study_type = models.CharField(max_length=100, null=True, blank=True)
@@ -61,9 +55,7 @@ class Education(models.Model):
 
 
 class Publication(models.Model):
-    id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4(), editable=False
-    )  # NOQA (ignore all errors on this line)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
     title = models.CharField(max_length=255, null=True, blank=True)
     published_on = models.CharField(max_length=100, null=True, blank=True)
     date_published = models.DateField(null=True, blank=True)
@@ -74,9 +66,7 @@ class Publication(models.Model):
 
 
 class Skill(models.Model):
-    id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4(), editable=False
-    )  # NOQA (ignore all errors on this line)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
     name = models.CharField(max_length=100, null=True, blank=True)
     level = models.CharField(max_length=100, null=True, blank=True)
     keywords = ArrayField(models.CharField(max_length=100), null=True, blank=True)
@@ -86,9 +76,7 @@ class Skill(models.Model):
 
 
 class Language(models.Model):
-    id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4(), editable=False
-    )  # NOQA (ignore all errors on this line)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
     language = models.CharField(max_length=100, null=True, blank=True)
     fluency = models.CharField(max_length=100, null=True, blank=True)
 
@@ -97,9 +85,7 @@ class Language(models.Model):
 
 
 class Interest(models.Model):
-    id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4(), editable=False
-    )  # NOQA (ignore all errors on this line)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
     name = models.CharField(max_length=100, null=True, blank=True)
     keyword = ArrayField(models.CharField(max_length=100), null=True, blank=True)
 
@@ -108,9 +94,7 @@ class Interest(models.Model):
 
 
 class Reference(models.Model):
-    id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4(), editable=False
-    )  # NOQA (ignore all errors on this line)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
     name = models.CharField(max_length=100, null=True, blank=True)
     reference = models.TextField(null=True, blank=True)
 
@@ -119,12 +103,15 @@ class Reference(models.Model):
 
 
 class PersonalDetail(models.Model):
-    id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4(), editable=False
-    )  # NOQA (ignore all errors on this line)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
     name = models.CharField(max_length=50, null=True, blank=True)
     label = models.CharField(max_length=50, null=True, blank=True)
-    picture = models.ImageField(upload_to="", null=True, blank=True)
+    picture = models.ImageField(
+        upload_to=generic_documents_directory,
+        null=True,
+        blank=True,
+        storage=PublicMediaStorage(),
+    )
     phone = PhoneNumberField(null=True, blank=True)
     website = models.URLField(null=True, blank=True)
     summary = models.TextField(null=True, blank=True)
@@ -134,9 +121,7 @@ class PersonalDetail(models.Model):
 
 
 class Profile(models.Model):
-    id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4(), editable=False
-    )  # NOQA (ignore all errors on this line)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
     profile = models.ForeignKey(
         "resume.PersonalDetail", null=True, blank=True, on_delete=models.CASCADE
     )

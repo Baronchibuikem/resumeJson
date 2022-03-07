@@ -10,8 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+from email.policy import default
 import os
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,10 +43,12 @@ INSTALLED_APPS = [
     "resume",
     "phonenumber_field",
     "rest_framework",
+    "storages",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -80,10 +84,10 @@ WSGI_APPLICATION = "resumejson.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "co_ride",
-        "USER": "co_ride",
-        "PASSWORD": "resumejson",
-        "HOST": "co_ride",
+        "NAME": "resumejosn",
+        "USER": "postgres",
+        "PASSWORD": "postgres",
+        "HOST": "localhost",
         "PORT": 5432,
     }
 }
@@ -122,17 +126,27 @@ USE_L10N = True
 USE_TZ = True
 
 
+# ########### STATIC FILE CONFIGURATION ###########
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static_dist"),)
+# store static files locally and serve with whitenoise
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = "/static/"
+# ######### AWS CONFIGURATION ###########
+AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_PUBLIC_BUCKET_NAME = config("AWS_STORAGE_PUBLIC_BUCKET_NAME")
+AWS_STORAGE_PRIVATE_BUCKET_NAME = config("AWS_STORAGE_PRIVATE_BUCKET_NAME")
+AWS_STORAGE_LOCATION_NAME = "media"
 
-
-STATIC_ROOT = os.path.join(BASE_DIR, "static/")
-
-MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
-
-MEDIA_URL = "/media/"
+# ######### MEDIA CONFIGURATION ###########
+PUBLIC_MEDIA_URL = f"https://{AWS_STORAGE_PUBLIC_BUCKET_NAME}.s3.amazonaws.com/"
+MEDIA_URL = f"https://{AWS_STORAGE_PRIVATE_BUCKET_NAME}.s3.amazonaws.com/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
